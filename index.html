@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام إدارة المحل</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="app">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+
+        <div class="logo">
+            <div class="logo-icon">🏪</div>
+            <div>
+                <h2>المحل</h2>
+                <span>نظام الإدارة</span>
+            </div>
+        </div>
+
+        <nav>
+
+            <button class="nav-btn active" data-section="dashboardSection">
+                🏠 الرئيسية
+            </button>
+
+            <button class="nav-btn" data-section="salesSection">
+                💰 المبيعات
+            </button>
+
+            <button class="nav-btn" data-section="salesArchiveSection">
+                📚 أرشيف المبيعات
+            </button>
+
+            <button class="nav-btn" data-section="purchasesSection">
+                🛒 المشتريات
+            </button>
+
+            <button class="nav-btn" data-section="productsSection">
+                📦 المنتجات
+            </button>
+
+            <button class="nav-btn" data-section="reportsSection">
+                📊 التقارير
+            </button>
+
+        </nav>
+
+    </aside>
+
+
+    <!-- Main -->
+    <main class="main">
+
+        <!-- Header -->
+        <header class="topbar">
+            <div>
+                <h1 id="pageTitle">الرئيسية</h1>
+                <p>إدارة المحل والمبيعات والمخزون</p>
+            </div>
+
+            <div class="date-box" id="currentDate"></div>
+        </header>
+
+
+        <!-- ================= DASHBOARD ================= -->
+
+        <section id="dashboardSection" class="section active">
+
+            <div class="cards">
+
+                <div class="stat-card">
+                    <div class="stat-icon">💰</div>
+                    <div>
+                        <span>إجمالي المبيعات</span>
+                        <strong id="dashboardSales">0.00</strong>
+                        <small>جنيه</small>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">📈</div>
+                    <div>
+                        <span>إجمالي الأرباح</span>
+                        <strong id="dashboardProfit">0.00</strong>
+                        <small>جنيه</small>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">💳</div>
+                    <div>
+                        <span>المبالغ المتبقية</span>
+                        <strong id="dashboardRemaining">0.00</strong>
+                        <small>جنيه</small>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">🧾</div>
+                    <div>
+                        <span>عدد الفواتير</span>
+                        <strong id="dashboardInvoices">0</strong>
+                        <small>فاتورة</small>
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div class="dashboard-grid">
+
+                <div class="panel">
+                    <div class="panel-title">
+                        <h3>آخر المبيعات</h3>
+                    </div>
+
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>الفاتورة</th>
+                                    <th>العميل</th>
+                                    <th>التاريخ</th>
+                                    <th>الإجمالي</th>
+                                    <th>المتبقي</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="recentSalesBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+
+                <div class="panel">
+
+                    <div class="panel-title">
+                        <h3>تنبيهات المخزون</h3>
+                    </div>
+
+                    <div id="stockAlerts"></div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= SALES ================= -->
+
+        <section id="salesSection" class="section">
+
+            <div class="page-header">
+                <div>
+                    <h2>فاتورة مبيعات جديدة</h2>
+                    <p>أضف المنتجات ثم اطبع الفاتورة وبعدها احفظها في الأرشيف.</p>
+                </div>
+
+                <button class="danger-btn" id="clearInvoiceBtn">
+                    🗑️ مسح الفاتورة
+                </button>
+            </div>
+
+
+            <div class="notice">
+                ℹ️ الطباعة لا تحفظ الفاتورة في الأرشيف. بعد الانتهاء اضغط
+                <strong>إتمام البيع وحفظ في الأرشيف</strong>.
+            </div>
+
+
+            <!-- Invoice Information -->
+            <div class="panel">
+
+                <div class="panel-title">
+                    <h3>بيانات الفاتورة</h3>
+                </div>
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+                        <label>رقم الفاتورة</label>
+                        <input type="text" id="saleInvoiceNumber" readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label>اسم العميل</label>
+                        <input
+                            type="text"
+                            id="saleCustomerName"
+                            placeholder="اسم العميل"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label>التاريخ</label>
+                        <input type="text" id="saleDate" readonly>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Add Product -->
+            <div class="panel">
+
+                <div class="panel-title">
+                    <h3>إضافة منتج للفاتورة</h3>
+                </div>
+
+                <div class="form-grid product-entry">
+
+                    <div class="form-group">
+                        <label>كود المنتج</label>
+                        <input
+                            type="text"
+                            id="saleProductCode"
+                            placeholder="مثال: P001"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label>اسم المنتج</label>
+                        <input
+                            type="text"
+                            id="saleProductName"
+                            readonly
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label>السعر</label>
+                        <input
+                            type="number"
+                            id="saleProductPrice"
+                            min="0"
+                            step="0.01"
+                            placeholder="0"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label>الكمية</label>
+                        <input
+                            type="number"
+                            id="saleProductQuantity"
+                            min="1"
+                            step="1"
+                            value="1"
+                        >
+                    </div>
+
+                </div>
+
+                <button class="primary-btn" id="addToInvoiceBtn">
+                    ➕ إضافة للفاتورة
+                </button>
+
+            </div>
+
+
+            <!-- Current Invoice -->
+            <div class="panel">
+
+                <div class="panel-title">
+                    <h3>الفاتورة الحالية</h3>
+                    <span class="items-count" id="currentItemsCount">0 منتجات</span>
+                </div>
+
+
+                <div class="table-wrapper">
+
+                    <table>
+
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>الكود</th>
+                                <th>المنتج</th>
+                                <th>الكمية</th>
+                                <th>السعر</th>
+                                <th>الإجمالي</th>
+                                <th>الربح</th>
+                                <th>حذف</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="currentInvoiceBody"></tbody>
+
+                    </table>
+
+                </div>
+
+
+                <div id="emptyInvoice" class="empty-state">
+                    لم تتم إضافة أي منتجات للفاتورة بعد.
+                </div>
+
+
+                <!-- Invoice Summary -->
+                <div class="invoice-summary">
+
+                    <div class="summary-box">
+                        <span>إجمالي الفاتورة</span>
+                        <strong id="currentInvoiceTotal">0.00 جنيه</strong>
+                    </div>
+
+                    <div class="summary-box">
+                        <span>إجمالي الربح</span>
+                        <strong id="currentInvoiceProfit">0.00 جنيه</strong>
+                    </div>
+
+                    <div class="summary-box">
+                        <span>المدفوع</span>
+                        <input
+                            type="number"
+                            id="salePaid"
+                            min="0"
+                            step="0.01"
+                            value="0"
+                        >
+                    </div>
+
+                    <div class="summary-box remaining-box">
+                        <span>المتبقي</span>
+                        <strong id="currentInvoiceRemaining">0.00 جنيه</strong>
+                    </div>
+
+                </div>
+
+
+                <div class="invoice-actions">
+
+                    <button class="print-btn" id="printCurrentInvoiceBtn">
+                        🖨️ طباعة الفاتورة
+                    </button>
+
+                    <button class="success-btn" id="finishSaleBtn">
+                        ✅ إتمام البيع وحفظ في الأرشيف
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= SALES ARCHIVE ================= -->
+
+        <section id="salesArchiveSection" class="section">
+
+            <div class="page-header">
+
+                <div>
+                    <h2>أرشيف المبيعات</h2>
+                    <p>جميع الفواتير المكتملة والمحفوظة.</p>
+                </div>
+
+            </div>
+
+
+            <div class="panel">
+
+                <div class="search-grid">
+
+                    <div class="form-group">
+                        <label>بحث</label>
+                        <input
+                            type="text"
+                            id="archiveSearch"
+                            placeholder="رقم الفاتورة أو اسم العميل"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label>التاريخ</label>
+                        <input type="date" id="archiveDateSearch">
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="panel">
+
+                <div class="table-wrapper">
+
+                    <table>
+
+                        <thead>
+                            <tr>
+                                <th>رقم الفاتورة</th>
+                                <th>العميل</th>
+                                <th>التاريخ</th>
+                                <th>عدد المنتجات</th>
+                                <th>الإجمالي</th>
+                                <th>المدفوع</th>
+                                <th>المتبقي</th>
+                                <th>الربح</th>
+                                <th>طباعة</th>
+                                <th>حذف</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="salesArchiveBody"></tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= PURCHASES ================= -->
+
+        <section id="purchasesSection" class="section">
+
+            <div class="page-header">
+
+                <div>
+                    <h2>المشتريات</h2>
+                    <p>إضافة المشتريات وتحديث المخزون.</p>
+                </div>
+
+            </div>
+
+
+            <div class="panel">
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+                        <label>التاريخ</label>
+                        <input type="date" id="purchaseDate">
+                    </div>
+
+                    <div class="form-group">
+                        <label>كود المنتج</label>
+                        <input type="text" id="purchaseProductCode">
+                    </div>
+
+                    <div class="form-group">
+                        <label>اسم المنتج</label>
+                        <input type="text" id="purchaseProductName">
+                    </div>
+
+                    <div class="form-group">
+                        <label>سعر الشراء</label>
+                        <input type="number" id="purchasePrice" min="0" step="0.01">
+                    </div>
+
+                    <div class="form-group">
+                        <label>الكمية</label>
+                        <input type="number" id="purchaseQuantity" min="1" step="1">
+                    </div>
+
+                    <div class="form-group">
+                        <label>المدفوع</label>
+                        <input type="number" id="purchasePaid" min="0" step="0.01" value="0">
+                    </div>
+
+                </div>
+
+                <button class="primary-btn" id="addPurchaseBtn">
+                    ➕ إضافة المشتريات
+                </button>
+
+            </div>
+
+
+            <div class="panel">
+
+                <div class="panel-title">
+                    <h3>سجل المشتريات</h3>
+                </div>
+
+                <div class="table-wrapper">
+
+                    <table>
+
+                        <thead>
+                            <tr>
+                                <th>التاريخ</th>
+                                <th>الكود</th>
+                                <th>المنتج</th>
+                                <th>السعر</th>
+                                <th>الكمية</th>
+                                <th>الإجمالي</th>
+                                <th>المدفوع</th>
+                                <th>المتبقي</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="purchasesBody"></tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= PRODUCTS ================= -->
+
+        <section id="productsSection" class="section">
+
+            <div class="page-header">
+
+                <div>
+                    <h2>المنتجات</h2>
+                    <p>إدارة المنتجات والأسعار والمخزون.</p>
+                </div>
+
+            </div>
+
+
+            <div class="panel">
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+                        <label>كود المنتج</label>
+                        <input type="text" id="productCode">
+                    </div>
+
+                    <div class="form-group">
+                        <label>اسم المنتج</label>
+                        <input type="text" id="productName">
+                    </div>
+
+                    <div class="form-group">
+                        <label>سعر الشراء</label>
+                        <input type="number" id="productPurchasePrice" min="0" step="0.01">
+                    </div>
+
+                    <div class="form-group">
+                        <label>سعر البيع</label>
+                        <input type="number" id="productSellingPrice" min="0" step="0.01">
+                    </div>
+
+                    <div class="form-group">
+                        <label>الكمية</label>
+                        <input type="number" id="productQuantity" min="0" step="1">
+                    </div>
+
+                </div>
+
+                <button class="primary-btn" id="addProductBtn">
+                    ➕ إضافة المنتج
+                </button>
+
+            </div>
+
+
+            <div class="panel">
+
+                <div class="panel-title">
+
+                    <h3>قائمة المنتجات</h3>
+
+                    <input
+                        class="small-search"
+                        id="productSearch"
+                        placeholder="بحث عن منتج..."
+                    >
+
+                </div>
+
+
+                <div class="table-wrapper">
+
+                    <table>
+
+                        <thead>
+                            <tr>
+                                <th>الكود</th>
+                                <th>المنتج</th>
+                                <th>سعر الشراء</th>
+                                <th>سعر البيع</th>
+                                <th>المخزون</th>
+                                <th>قيمة المخزون</th>
+                                <th>الحالة</th>
+                                <th>حذف</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="productsBody"></tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= REPORTS ================= -->
+
+        <section id="reportsSection" class="section">
+
+            <div class="page-header">
+
+                <div>
+                    <h2>التقارير</h2>
+                    <p>ملخص المبيعات والأرباح والمخزون.</p>
+                </div>
+
+                <button class="print-btn" id="printReportsBtn">
+                    🖨️ طباعة التقرير
+                </button>
+
+            </div>
+
+
+            <div class="cards">
+
+                <div class="stat-card">
+                    <div class="stat-icon">💰</div>
+                    <div>
+                        <span>المبيعات</span>
+                        <strong id="reportSales">0.00</strong>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">🛒</div>
+                    <div>
+                        <span>المشتريات</span>
+                        <strong id="reportPurchases">0.00</strong>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">📈</div>
+                    <div>
+                        <span>الأرباح</span>
+                        <strong id="reportProfit">0.00</strong>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">📦</div>
+                    <div>
+                        <span>قيمة المخزون</span>
+                        <strong id="reportStock">0.00</strong>
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div class="panel">
+
+                <div class="panel-title">
+                    <h3>ملخص التقرير</h3>
+                </div>
+
+                <div id="reportDetails"></div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<script src="script.js"></script>
+
+</body>
+</html>
